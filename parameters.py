@@ -1,9 +1,12 @@
+import os
 import argparse
 
 parser = argparse.ArgumentParser()
 
 
 YML_PATH = {
+    'tlu-states': os.path.join('config', 'tlu-states.yml'),
+    
     "mit-states": './config/mit-states.yml',
     "ut-zappos": './config/ut-zappos.yml',
     "cgqa": './config/cgqa.yml',

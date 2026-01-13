@@ -230,8 +230,8 @@ class Base(nn.Module):
         l, _ = idx.shape
         token_tensors = self.construct_token_tensors(idx)
 
-        #batch_img, patch_img = self.encode_image(batch_img.type(self.clip.dtype))
-        cls_img, cls_patch_img = self.encode_image(batch_img.type(self.clip.dtype))
+        #batch_img, patch_img = self.encode_image(batch[0].cuda().type(self.clip.dtype))
+        cls_img, cls_patch_img = self.encode_image(batch[0].cuda().type(self.clip.dtype))
 
         text_features = self.encode_text(self.token_ids[0], token_tensors[0], enable_pos_emb=self.enable_pos_emb)[0]
         normalized_text_features = text_features / text_features.norm(dim=-1, keepdim=True)

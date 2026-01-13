@@ -1,0 +1,28 @@
+# === Python ===
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+
+# === Machine Learning / Weights (Phần quan trọng nhất) ===
+# Không đẩy các file trọng số nặng lên Git
+*.pth
+*.pt
+*.ckpt
+*.h5
+
+# === Kaggle Specific ===
+.virtual_documents/
+*.zip
+
+# === IDEs / Editors ===
+.vscode/
+.idea/
+.DS_Store
+
+# === Project Specific (VP_CMJL) ===
+# Nếu anh lưu dữ liệu hoặc kết quả chạy trong các folder này thì nên loại bỏ
+data/
+output/
+save/

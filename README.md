@@ -1,63 +1,17 @@
-# [ICCV 2025] Learning Visual Proxy for Compositional Zero-Shot Learning
-* **Title**: **[Learning Visual Proxy for Compositional Zero-Shot Learning](https://arxiv.org/pdf/2501.13859)**
-* **Authors**: Shiyu Zhang, Cheng Yan1, Yang Liu, Chenchen Jing, Lei Zhou, Wenjun Wang
-* **Institutes**: Tianjin University, Zhejiang University, Zhejiang University of Technology, Hainan University
-## 🚀 Overview
-![](https://github.com/codefish12-09/VP_CMJL/blob/main/images/method.jpg?raw=true)
-## 📖 Description
-Compositional Zero-Shot Learning (CZSL) aims to recognize novel attribute-object compositions by leveraging
-knowledge from seen compositions. Current methods align textual prototypes with visual features via Vision-Language Models (VLMs), but suffer from two limitations: 
-(1) Modality gaps hinder the discrimination of semantically similar pairs.
-(2) Single-modal textual prototypes lack fine-grained visual cues. 
-In this paper, we introduce Visual Proxy Learning, a method that reduces modality gaps and enhances compositional generalization. We initialize visual proxies for attributes, objects, and their compositions using text representations and optimize the visual space to capture
-fine-grained cues, improving visual representations. Additionally, we propose Cross-Modal Joint Learning (CMJL), which imposes cross-modal constraints between the text-image and fine-grained visual spaces, improving generalization for unseen compositions and discriminating similar pairs. Experiments show state-of-the-art performance in closed-world scenarios and competitive results in open-world settings across four CZSL benchmarks, demonstrating the effectiveness of our approach in compositional generalization.
-## 📈 Results
+# VP-CMJL: Visual Proxy - Compositional Multi-Job Learning
 
-### Main Results
+Dự án này triển khai mô hình **VP-CMJL** cho bài toán **Compositional Zero-Shot Learning (CZSL)** trên bộ dữ liệu hoa quả Việt Nam (**tlu-states**). [cite: 2026-01-13]
 
-The following results are obtained with a pre-trained CLIP (ViT-L/14). More experimental results can be found in the paper.
-![](https://github.com/codefish12-09/VP_CMJL/blob/main/images/experiment.png?raw=true)
+## 📊 Kết quả đánh giá (Metrics)
+Trong bài toán CZSL, chúng tôi sử dụng 4 chỉ số chính để đánh giá mô hình: [cite: 2026-01-13]
 
-## ⚙️ Setup
+* **Seen (S)**: Khả năng nhận diện các cặp (Thuộc tính - Đối tượng) đã xuất hiện trong quá trình huấn luyện. [cite: 2026-01-13]
+* **Unseen (U)**: Khả năng suy luận trên các cặp mới hoàn toàn mà mô hình chưa từng thấy. [cite: 2026-01-13]
+* **Harmonic Mean (HM)**: Chỉ số trung bình điều hòa giữa S và U, đánh giá thực lực tổng thể của mô hình. [cite: 2026-01-13]
+    * Công thức: $$HM = \frac{2 \cdot S \cdot U}{S + U}$$
+* **AUC (Area Under Curve)**: Diện tích dưới đường cong độ chính xác, thể hiện độ ổn định của mô hình khi thay đổi các ngưỡng bias. [cite: 2026-01-13]
 
-Our work is implemented in PyTorch framework. Create a conda environment `vpcmjl` using:
-
-```
-conda create --name vpcmjl python=3.10.3
-conda activate vpcmjl
-pip install -r requirements.txt
-```
-
-## 🏋️ Training Phase
-
-```py
-python train_multi_proxy.py --dataset <DATASET> 
-```
-
-## 📊 Evaluation
-
-We evaluate our models in two settings: closed-world and open-world.
-
-### Closed-World Evaluation
-
-```py
-python test_multi_proxy.py --dataset <DATASET> 
-```
-
-### Open-World Evaluation
-
-For our open-world evaluation, we compute the feasbility calibration and then evaluate on the dataset.
-
-For feasbility calibration, we have computed feasibility similarities and saved them at `data/feasibility_<dataset>.pt`. Therefore, you don't need to handle this yourself. If you need to compute on your own, please refer to [DFSP](https://github.com/Forest-art/DFSP?tab=readme-ov-file#feasibility-calibration).
-
-Just run:
-
-```py
-python test_multi_proxy.py \
---dataset <DATASET>  \
---open_world True \
---threshold 0.4 \
-```
-## 🙏 Acknowledgement
-
-Thanks for the publicly available code of [Troika](https://github.com/bighuang624/Troika), [DFSP](https://github.com/Forest-art/DFSP?tab=readme-ov-file#feasibility-calibration)
+## 🚀 Cài đặt và Chạy
+1. Clone dự án và cài đặt môi trường.
+2. Huấn luyện: `python train_multi_proxy.py --dataset tlu-states`
+3. Chấm điểm: `python test_multi_proxy.py --dataset tlu-states --load_model [path_to_weights]` [cite: 2026-01-13]

@@ -25,4 +25,3 @@ venv/
 # Nếu anh lưu dữ liệu hoặc kết quả chạy trong các folder này thì nên loại bỏ
 data/
 output/
-save/

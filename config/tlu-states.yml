@@ -15,7 +15,7 @@ model:
 train:
   dataset: tlu-states
   # Đã cập nhật sang dataset-fruits-1 mới nhất của anh
-  dataset_path: /kaggle/input/tlu-dataset-fruits-1/tlu-states
+  dataset_path: /kaggle/input/tlu-states-2/tlu-states_1
   optimizer: Adam
   scheduler: StepLR
   step_size: 5

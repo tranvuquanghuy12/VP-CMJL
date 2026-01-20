@@ -170,7 +170,8 @@ def evaluate(model, dataset):
 if __name__ == "__main__":
     config = parser.parse_args()
     load_args(YML_PATH[config.dataset], config)
-    config1=parser.parse_args()
+    config = parser.parse_args(namespace=config)
+    print("🔥 Tham số dòng lệnh đã ghi đè thành công file Config (CLI > YAML)")
     print(config)
     # set the seed value
     set_seed(config.seed)
@@ -198,7 +199,13 @@ if __name__ == "__main__":
     offset = len(attributes)
 
     model = Base(config, attributes=attributes, classes=classes,offset=offset).cuda()
-    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-5, weight_decay=0.01)
+    if config.optimizer == 'AdamW':
+        optimizer = torch.optim.AdamW(model.parameters(), lr=config.lr, weight_decay=config.weight_decay)
+    elif config.optimizer == 'Adam':
+        optimizer = torch.optim.Adam(model.parameters(), lr=config.lr, weight_decay=config.weight_decay)
+    else:
+        raise ValueError(f"Optimizer {config.optimizer} not supported")
+    print(f"✅ Optimizer đã được nạp động từ file Config: {config.optimizer}, LR={config.lr}, WD={config.weight_decay}")
     os.makedirs(config.save_path, exist_ok=True)
 
     train_model(model, optimizer, config, train_dataset, val_dataset, test_dataset)

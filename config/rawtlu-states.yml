@@ -1,0 +1,41 @@
+model:
+  prompt_template: ["a photo of {} {}", "a photo of {}", "a photo of {}"]
+  ctx_init: ["a photo of ", "a photo of ", "a photo of "]
+  clip_model: "ViT-L/14"
+  adapter_dim: 64
+  adapter_dropout: 0.1
+  save_every_n: 1
+  tau_t: 0.01
+  tau_i: 0.04
+  alpha: 0.3
+  beta: 0.7
+  best_model_metric: best_loss
+  fusion: bottleneck
+
+train:
+  dataset: tlu-states
+  dataset_path: /kaggle/input/tlu-states-2/tlu-states_2
+  optimizer: Adam
+  scheduler: StepLR
+  step_size: 5
+  gamma: 0.5
+  lr: 0.0005                # 5e-4: Cao gấp 50 lần mức anh đang dùng
+  attr_dropout: 0.3
+  weight_decay: 0.00001      # 1e-5: Rất nhỏ để mô hình học nhanh
+  context_length: 8
+  train_batch_size: 32       # Cần lưu ý bộ nhớ GPU P100 khi dùng ViT-L/14
+  gradient_accumulation_steps: 1
+  epochs: 15
+  epoch_start: 0
+  save_path: /kaggle/working/output
+  val_metric: AUC
+  save_final_model: True
+
+test:
+  eval_batch_size: 64
+  open_world: False
+  topk: 1
+  text_encoder_batch_size: 1024
+  threshold_trials: 50
+  bias: 0.001
+  text_first: True

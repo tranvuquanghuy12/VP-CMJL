@@ -13,6 +13,7 @@ from clip_modules.tokenization_clip import SimpleTokenizer
 from model.common import *
 from functools import partial
 from transformers import GPT2Tokenizer, GPT2Model
+from model.gat_layer import GATLayer
 
 
 class Adapter(nn.Module):
@@ -119,7 +120,10 @@ class Base(nn.Module):
 
         self.attr_disentangler = Disentangler(output_dim)
         self.obj_disentangler = Disentangler(output_dim)
-        self.linear = nn.Linear(output_dim * 2, output_dim)
+        self.attr_disentangler = Disentangler(output_dim)
+        self.obj_disentangler = Disentangler(output_dim)
+        # self.linear = nn.Linear(output_dim * 2, output_dim)
+        self.gat = GATLayer(in_features=output_dim, out_features=output_dim, dropout=0.2, alpha=0.2, nheads=4)
         self.attr_ca = CrossResidualAttentionBlock(768, 16)
         self.obj_ca = CrossResidualAttentionBlock(768, 16)
         self.com_ca = CrossResidualAttentionBlock(768, 16)
@@ -259,8 +263,11 @@ class Base(nn.Module):
         com_proxy = torch.zeros(l, 2, 768)
         com_proxy[:, 0, :] = self.attr_proxy[attr_idx].type(self.clip.dtype)
         com_proxy[:, 1, :] = self.obj_proxy[obj_idx].type(self.clip.dtype)
-        combined_proxy = torch.cat((com_proxy[:, 0, :], com_proxy[:, 1, :]), dim=1).cuda()
-        com_proxy = self.linear(combined_proxy)  # v^c
+        # combined_proxy = torch.cat((com_proxy[:, 0, :], com_proxy[:, 1, :]), dim=1).cuda()
+        # com_proxy = self.linear(combined_proxy)  # v^c
+        com_proxy = self.gat(com_proxy.cuda())
+        # Mean pooling to get composition embedding
+        com_proxy = com_proxy.mean(dim=1)
         
         normalized_com_proxy = com_proxy / com_proxy.norm(dim=-1, keepdim=True)
         normalized_attr_proxy = self.attr_proxy / self.attr_proxy.norm(dim=-1, keepdim=True)

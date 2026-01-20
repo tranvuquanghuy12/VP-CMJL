@@ -50,6 +50,12 @@ def train_model(model, optimizer, config, train_dataset, val_dataset, test_datas
         else:
             print(f"Model parameters not found at {model_path}, starting from scratch.")
             start_epoch = 0  # Reset to start from scratch if the model is not found
+    elif config.load_model:
+        if os.path.exists(config.load_model):
+            msg = model.load_state_dict(torch.load(config.load_model), strict=False)
+            print(f"Loaded model parameters from {config.load_model} with msg: {msg}")
+        else:
+            print(f"Model parameters not found at {config.load_model}")
 
     train_losses = []
     
@@ -192,7 +198,7 @@ if __name__ == "__main__":
     offset = len(attributes)
 
     model = Base(config, attributes=attributes, classes=classes,offset=offset).cuda()
-    optimizer = torch.optim.Adam(model.parameters(), lr=config.lr, weight_decay=config.weight_decay)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-5, weight_decay=0.01)
     os.makedirs(config.save_path, exist_ok=True)
 
     train_model(model, optimizer, config, train_dataset, val_dataset, test_dataset)

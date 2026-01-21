@@ -1,5 +1,5 @@
 model:
-  prompt_template: ["a photo of x x", "a photo of x", "a photo of x"]
+  prompt_template: ["a photo of {} {}", "a photo of {}", "a photo of {}"]
   ctx_init: ["a photo of ", "a photo of ", "a photo of "]
   clip_model: "ViT-L/14"
   adapter_dim: 64
@@ -10,38 +10,31 @@ model:
   tau_i: 0.04
   alpha: 0.3
   beta: 0.7
-  best_model_metric: best_loss
+  best_model_metric: AUC # Đổi sang AUC để lấy bản có khả năng suy luận tốt nhất
 train:
   dataset: mit-states
-  # dataset_path: 
-  optimizer: Adam
+  dataset_path: "/kaggle/working/mit-states" # Trỏ vào folder anh em mình vừa tạo
+  optimizer: AdamW # Dùng AdamW thay cho Adam để tối ưu Weight Decay
   scheduler: StepLR
   step_size: 5
   gamma: 0.5
-  # lr: 0.0005   # 0.00025
-  lr: 0.0005
+  lr: 0.00001 # 1e-5: Tốc độ cực chuẩn cho lớp GAT để không bị Loss nan
   attr_dropout: 0.3
-  weight_decay: 0.00001
+  weight_decay: 0.01 # Phanh WD mạnh để chống Overfitting trên MIT-States
   context_length: 8
-  train_batch_size: 32  # 64
+  train_batch_size: 32 # Tối ưu tốc độ cho hơn 60k ảnh
   gradient_accumulation_steps: 1
-  # seed: 
-  epochs: 15
+  epochs: 20 # Tăng lên 20 để GAT có đủ thời gian "ngấm" dữ liệu lớn
   epoch_start: 0
-  save_path: 
+  save_path: "/kaggle/working/output_mit" # Nơi lưu checkpoint
   val_metric: AUC
   save_final_model: True
   load_model: 
-  dataset_path:  
-
-
 test:
   eval_batch_size: 64
   open_world: False
-  # load_model: 
   topk: 1
   text_encoder_batch_size: 1024
-  # threshold: 0.4
   threshold_trials: 50
   bias: 0.001
   text_first: True

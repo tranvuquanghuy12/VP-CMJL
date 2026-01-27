@@ -194,11 +194,15 @@ if __name__ == "__main__":
     allobj = train_dataset.objs
     pairs = train_dataset.train_pairs
     pairs_len=len(pairs)
-    classes = [cla.replace(".", " ").lower() for cla in allobj]
-    attributes = [attr.replace(".", " ").lower() for attr in allattrs]
-    offset = len(attributes)
+    
+    print(f"DEBUG: Số lượng attr={len(allattrs)}, obj={len(allobj)}")
 
-    model = Base(config, attributes=attributes, classes=classes,offset=offset).cuda()
+    # Chỉ lấy đúng số lượng mà checkpoint cũ yêu cầu (5 objects, 11 attributes)
+    attributes = [attr.replace(".", " ").lower() for attr in allattrs[:11]]
+    classes = [cla.replace(".", " ").lower() for cla in allobj[:5]]
+    offset = 11 
+
+    model = Base(config, attributes=attributes, classes=classes, offset=offset).cuda()
     if config.optimizer == 'AdamW':
         optimizer = torch.optim.AdamW(model.parameters(), lr=config.lr, weight_decay=config.weight_decay)
     elif config.optimizer == 'Adam':
